@@ -29,4 +29,5 @@ COPY --chown=${USERNAME}:${USERNAME} --chmod=755 ../tv_control_agent/entrypoint.
 
 RUN uv sync --frozen --no-cache
 
+EXPOSE 8000
 ENTRYPOINT ["/app/entrypoint.sh"]

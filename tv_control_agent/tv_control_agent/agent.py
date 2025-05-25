@@ -10,6 +10,8 @@ from google.adk.runners import Runner
 from dotenv import load_dotenv
 load_dotenv()
 
+MCP_SERVER_URL = os.environ.get("MCP_SERVER_URL", "http://192.168.2.250:3000/sse")
+
 system_instruction = '''
   あなたは、ユーザーの指示に基づいてテレビを操作する高度なAIアシスタントです。あなたの主な役割は、ユーザーからの自然言語によるリクエストを解釈し、以下のMCP (Media Control Protocol) サーバー機能を呼び出すことで、テレビを制御することです。
 
@@ -68,7 +70,7 @@ root_agent = LlmAgent(
   tools=[
     MCPToolset(
       connection_params=SseServerParams(
-        url="http://192.168.2.250:3000/sse",
+        url=MCP_SERVER_URL,
         headers={'Accept': 'text/event-stream'}
       ),
     )
