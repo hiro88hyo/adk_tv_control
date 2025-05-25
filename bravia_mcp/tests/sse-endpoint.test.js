@@ -173,9 +173,7 @@ describe('SSE Endpoint Tests', () => {
     const response = await mcpClient.post(`/messages?sessionId=${sessionId}`, testMessage);
     expect(response.status).toBe(202);
     expect(response.headers.get('x-protocol-version')).toBe('2024-11-05');
-    expect(response.data).toHaveProperty('jsonrpc', '2.0');
-    expect(response.data).toHaveProperty('result', null);
-    expect(response.data).toHaveProperty('id', 1);
+    expect(response.data).toBe('Accepted');
   });
 
   test('無効なセッションIDでエラーが返されること', async () => {

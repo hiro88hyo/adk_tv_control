@@ -28,13 +28,22 @@ describe('StreamableHTTP Endpoint Tests', () => {
   beforeAll(async () => {
     return new Promise((resolve, reject) => {
       serverProcess = spawn('node', ['build/index.js', '--transport=streamable'], {
-        env: { ...process.env, PORT: '3000' }
+        env: { ...process.env, PORT: '3000', TV_IP: '192.168.6.158', TV_PSK: '0000' }
       });
+
+      let serverStarted = false;
+      let serverReady = false;
 
       serverProcess.stdout.on('data', (data) => {
         console.log(`Server: ${data}`);
-        if (data.toString().includes('MCP Server listening')) {
-          resolve();
+        const output = data.toString();
+        if (output.includes('MCP Server listening')) {
+          serverStarted = true;
+        }
+        if (serverStarted && output.includes('Protocol version: 2025-03-26')) {
+          serverReady = true;
+          // サーバーが完全に起動するまで少し待機
+          setTimeout(resolve, 1000);
         }
       });
 
@@ -49,7 +58,9 @@ describe('StreamableHTTP Endpoint Tests', () => {
 
       // タイムアウト設定
       setTimeout(() => {
-        reject(new Error('Server startup timeout'));
+        if (!serverReady) {
+          reject(new Error('Server startup timeout'));
+        }
       }, 5000);
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "tv_control_agent",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../../docker-compose.yml",
   "service": "tv_control_agent",
   "workspaceFolder": "/workspace",
   "mounts": [

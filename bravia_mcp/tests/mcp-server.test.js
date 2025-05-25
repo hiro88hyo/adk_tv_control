@@ -16,45 +16,40 @@ const mcpClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 5000, // タイムアウトを設定
 });
 
 // モック応答データ
 const mockSystemInfo = {
-  data: {
-    result: [{
-      product: 'Sony TV',
-      model: 'BRAVIA XR-65A90J',
-      language: 'ja-JP',
-      serial: 'XXXXXXXX',
-      macAddr: 'XX:XX:XX:XX:XX:XX',
-      name: 'リビングのTV',
-      generation: '2021',
-      area: 'jpn',
-      cid: 'XXXXXXXX'
-    }],
-    id: 1
-  }
+  result: [{
+    product: 'Sony TV',
+    model: 'BRAVIA XR-65A90J',
+    language: 'ja-JP',
+    serial: 'XXXXXXXX',
+    macAddr: 'XX:XX:XX:XX:XX:XX',
+    name: 'リビングのTV',
+    generation: '2021',
+    area: 'jpn',
+    cid: 'XXXXXXXX'
+  }],
+  id: 1
 };
 
 const mockPowerStatus = {
-  data: {
-    result: [{
-      status: 'active'
-    }],
-    id: 2
-  }
+  result: [{
+    status: 'active'
+  }],
+  id: 2
 };
 
 const mockVolumeInfo = {
-  data: {
-    result: [{
-      volume: 20,
-      mute: false,
-      minVolume: 0,
-      maxVolume: 100
-    }],
-    id: 3
-  }
+  result: [{
+    volume: 20,
+    mute: false,
+    minVolume: 0,
+    maxVolume: 100
+  }],
+  id: 3
 };
 
 // モックMCPレスポンス
@@ -67,8 +62,8 @@ const mockMcpSystemInfoResponse = {
         text: 'システム情報を取得しました。'
       },
       {
-        type: 'text',
-        text: JSON.stringify(mockSystemInfo.data.result[0], null, 2)
+        type: 'json',
+        data: mockSystemInfo.result[0]
       }
     ]
   },
@@ -84,8 +79,8 @@ const mockMcpPowerStatusResponse = {
         text: 'テレビの電源状態は ON です。'
       },
       {
-        type: 'text',
-        text: JSON.stringify(mockPowerStatus.data.result[0], null, 2)
+        type: 'json',
+        data: mockPowerStatus.result[0]
       }
     ]
   },
@@ -101,31 +96,58 @@ const mockMcpVolumeInfoResponse = {
         text: '音量情報を取得しました。 現在の音量: 20, ミュート: OFF (範囲: 0-100)'
       },
       {
-        type: 'text',
-        text: JSON.stringify(mockVolumeInfo.data.result[0], null, 2)
+        type: 'json',
+        data: mockVolumeInfo.result[0]
       }
     ]
   },
   id: 3
 };
 
+// エラーレスポンスのモック
+const mockErrorResponse = {
+  jsonrpc: '2.0',
+  error: {
+    code: -32000,
+    message: 'Internal error',
+    data: 'TV is not responding'
+  },
+  id: 1
+};
+
 // MCPセッションを初期化する関数（モック版）
 async function initializeMcpSession() {
-  // 実際のサーバーでなくモックレスポンスを返す
-  return 'mock-session-id';
+  try {
+    // 実際のサーバーでなくモックレスポンスを返す
+    return 'mock-session-id';
+  } catch (error) {
+    console.error('セッション初期化エラー:', error);
+    throw error;
+  }
 }
 
 // MCPツールを呼び出す関数（モック版）
 async function callMcpTool(sessionId, toolName, params = {}) {
-  // ツール名に応じてモックレスポンスを返す
-  if (toolName === 'getSystemInformation') {
-    return mockMcpSystemInfoResponse;
-  } else if (toolName === 'getPowerStatus') {
-    return mockMcpPowerStatusResponse;
-  } else if (toolName === 'getVolumeInformation') {
-    return mockMcpVolumeInfoResponse;
+  if (!sessionId) {
+    throw new Error('Invalid session ID');
   }
-  throw new Error(`Unknown tool: ${toolName}`);
+
+  // エラーシミュレーション
+  if (params.simulateError) {
+    return mockErrorResponse;
+  }
+
+  // ツール名に応じてモックレスポンスを返す
+  switch (toolName) {
+    case 'getSystemInformation':
+      return mockMcpSystemInfoResponse;
+    case 'getPowerStatus':
+      return mockMcpPowerStatusResponse;
+    case 'getVolumeInformation':
+      return mockMcpVolumeInfoResponse;
+    default:
+      throw new Error(`Unknown tool: ${toolName}`);
+  }
 }
 
 // サーバーが起動していない場合はテストをスキップ
@@ -157,10 +179,16 @@ describe('Bravia MCP Server Tests', () => {
     expect(Array.isArray(response.result.content)).toBe(true);
     expect(response.result.content.length).toBeGreaterThan(0);
     
-    // 少なくとも1つのテキストコンテンツがあること
+    // テキストコンテンツの確認
     const textContent = response.result.content.find(item => item.type === 'text');
     expect(textContent).toBeDefined();
     expect(textContent.text).toContain('システム情報を取得しました');
+
+    // JSONデータの確認
+    const jsonContent = response.result.content.find(item => item.type === 'json');
+    expect(jsonContent).toBeDefined();
+    expect(jsonContent.data).toHaveProperty('model');
+    expect(jsonContent.data).toHaveProperty('name');
   });
 
   test('電源状態が取得できること', async () => {
@@ -169,10 +197,15 @@ describe('Bravia MCP Server Tests', () => {
     expect(response.result).toHaveProperty('content');
     expect(Array.isArray(response.result.content)).toBe(true);
     
-    // 電源状態のテキストが含まれていること
+    // テキストコンテンツの確認
     const textContent = response.result.content.find(item => item.type === 'text');
     expect(textContent).toBeDefined();
     expect(textContent.text).toMatch(/テレビの電源状態は (ON|OFF) です/);
+
+    // JSONデータの確認
+    const jsonContent = response.result.content.find(item => item.type === 'json');
+    expect(jsonContent).toBeDefined();
+    expect(jsonContent.data).toHaveProperty('status');
   });
 
   test('音量情報が取得できること', async () => {
@@ -181,10 +214,32 @@ describe('Bravia MCP Server Tests', () => {
     expect(response.result).toHaveProperty('content');
     expect(Array.isArray(response.result.content)).toBe(true);
     
-    // 音量情報のテキストが含まれていること
+    // テキストコンテンツの確認
     const textContent = response.result.content.find(item => item.type === 'text');
     expect(textContent).toBeDefined();
     expect(textContent.text).toContain('音量情報を取得しました');
     expect(textContent.text).toMatch(/現在の音量: \d+/);
+
+    // JSONデータの確認
+    const jsonContent = response.result.content.find(item => item.type === 'json');
+    expect(jsonContent).toBeDefined();
+    expect(jsonContent.data).toHaveProperty('volume');
+    expect(jsonContent.data).toHaveProperty('mute');
+  });
+
+  test('無効なセッションIDでエラーが発生すること', async () => {
+    await expect(callMcpTool(null, 'getSystemInformation')).rejects.toThrow('Invalid session ID');
+  });
+
+  test('存在しないツールでエラーが発生すること', async () => {
+    await expect(callMcpTool(sessionId, 'nonExistentTool')).rejects.toThrow('Unknown tool');
+  });
+
+  test('エラー応答が正しく処理されること', async () => {
+    const response = await callMcpTool(sessionId, 'getSystemInformation', { simulateError: true });
+    expect(response).toHaveProperty('error');
+    expect(response.error).toHaveProperty('code');
+    expect(response.error).toHaveProperty('message');
+    expect(response.error.code).toBe(-32000);
   });
 }); 

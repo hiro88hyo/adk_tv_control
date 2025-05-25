@@ -1,6 +1,6 @@
 {
   "name": "bravia_mcp",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../../docker-compose.yml",
   "service": "bravia_mcp",
   "workspaceFolder": "/workspace",
   "mounts": [
