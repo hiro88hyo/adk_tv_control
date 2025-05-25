@@ -1,0 +1,45 @@
+{
+  "name": "bravia_mcp",
+  "version": "1.0.0",
+  "description": "This is a project template for Bravia Control using Node.js and DevContainer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test:mock": "NODE_OPTIONS=--experimental-vm-modules npx jest tests/mcp-server.mock.test.js",
+    "build": "npx tsc && chmod 755 build/index.js",
+    "start": "node build/index.js"
+  },
+  "type": "module",
+  "bin": {
+    "bravia-mcp-server": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [],
+  "author": "hiro88hyo",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.1",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.17",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "typescript": "^5.8.3"
+  },
+  "jest": {
+    "transform": {},
+    "extensionsToTreatAsEsm": [
+      ".jsx",
+      ".ts",
+      ".tsx"
+    ],
+    "testEnvironment": "node"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "name": "TypeScriptの型チェック",
+      "description": "TypeScriptの型チェックを有効にします",
+      "pattern": "**/*.ts",
+      "settings": {
+        "typescript.validate.enable": true,
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    },
+    {
+      "name": "Pythonの型チェック",
+      "description": "Pythonの型チェックを有効にします",
+      "pattern": "**/*.py",
+      "settings": {
+        "python.analysis.typeCheckingMode": "basic"
+      }
+    },
+    {
+      "name": "コードフォーマット",
+      "description": "コードフォーマットの設定",
+      "pattern": "**/*.{ts,py,json}",
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": {
+          "typescript": "esbenp.prettier-vscode",
+          "python": "ms-python.python"
+        }
+      }
+    },
+    {
+      "name": "ESLint",
+      "description": "ESLintの設定",
+      "pattern": "**/*.{ts,js}",
+      "settings": {
+        "eslint.enable": true,
+        "eslint.validate": ["typescript", "typescriptreact"]
+      }
+    },
+    {
+      "name": "Python Lint",
+      "description": "Pythonのリント設定",
+      "pattern": "**/*.py",
+      "settings": {
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true
+      }
+    },
+    {
+      "name": "Git設定",
+      "description": "Gitの設定",
+      "pattern": "**/*",
+      "settings": {
+        "git.enableSmartCommit": true,
+        "git.confirmSync": false,
+        "git.autofetch": true
+      }
+    },
+    {
+      "name": "エディタ設定",
+      "description": "エディタの基本設定",
+      "pattern": "**/*",
+      "settings": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.rulers": [80, 100],
+        "editor.wordWrap": "on",
+        "editor.minimap.enabled": true,
+        "editor.suggestSelection": "first",
+        "editor.acceptSuggestionOnEnter": "on"
+      }
+    },
+    {
+      "name": "ファイル除外",
+      "description": "特定のファイルを除外",
+      "pattern": "**/*",
+      "settings": {
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/*.pyc": true,
+          "**/node_modules": true,
+          "**/dist": true,
+          "**/.git": true
+        }
+      }
+    }
+  ]
+} 

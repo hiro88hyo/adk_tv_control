@@ -1,0 +1,52 @@
+# 依存関係
+# node_modules はバージョン管理しない
+node_modules/
+
+# 環境変数ファイル
+# ローカル環境に依存する設定を含むためバージョン管理しない
+.env
+
+# ログファイル
+npm-debug.log*
+yarn-error.log
+*.log
+
+# ビルド成果物
+# 多くの場合、コンパイルやトランスパイルによって生成されるファイル
+dist/
+build/
+out/
+coverage/ # テストカバレッジレポート
+
+# npm, yarn キャッシュやロックファイル (プロジェクト固有でないもの)
+# ただし、npm-shrinkwrap.json や yarn.lock は含めません（通常はバージョン管理します）
+package-lock.json # npm v5以降で自動生成されるロックファイル。これはバージョン管理するのが一般的ですが、チームポリシーによっては無視する場合もあります。基本的には管理推奨です。
+yarn.lock # yarnのロックファイル。これは通常バージョン管理します。もしチームで無視する場合のみ追加。
+.yarn-integrity
+
+# macOS固有のファイル
+.DS_Store
+
+# エディタやIDEの設定ファイル
+# 各自の環境に依存するためバージョン管理しない
+.vscode/ # VS Code
+.idea/ # IntelliJ IDEAなど
+*.sublime-project # Sublime Text
+*.sublime-workspace
+.settings/ # Eclipse
+.c9/ # Cloud9
+
+# その他一時ファイルなど
+tmp/
+temp/
+*.tmp
+*.swp
+
+.venv/
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info

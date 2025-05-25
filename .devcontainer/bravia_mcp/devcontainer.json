@@ -1,0 +1,25 @@
+{
+  "name": "bravia_mcp",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "bravia_mcp",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached"
+  ],
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "azuretools.vscode-docker"
+      ],
+      "settings": {
+        "workbench.colorCustomizations": {
+          "titleBar.activeBackground": "#19549C",
+          "titleBar.activeForeground": "#ffffff",
+          "activityBar.background": "#02A7E3",
+          "activityBar.foreground": "#ffffff"
+        }
+      }
+    }
+  }
+}

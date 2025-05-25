@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  bravia_mcp:
+    build:
+      context: ..
+      dockerfile: bravia_mcp/Dockerfile
+    network_mode: host
+    ports:
+      - 3000:3000
+    init: true
+  tv_control_agent:
+    build:
+      context: ..
+      dockerfile: tv_control_agent/Dockerfile
+    network_mode: host
+    volumes:
+      - ../tv_control_agent:/workspace:cached
+    init: true

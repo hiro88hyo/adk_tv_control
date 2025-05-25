@@ -1,0 +1,26 @@
+{
+  "name": "tv_control_agent",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "tv_control_agent",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached"
+  ],
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "azuretools.vscode-docker",
+        "ms-python.python"
+      ],
+      "settings": {
+        "workbench.colorCustomizations": {
+          "titleBar.activeBackground": "#19549C",
+          "titleBar.activeForeground": "#ffffff",
+          "activityBar.background": "#02A7E3",
+          "activityBar.foreground": "#ffffff"
+        }
+      }
+    }
+  }
+}
