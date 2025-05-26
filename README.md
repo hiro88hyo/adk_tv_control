@@ -5,7 +5,7 @@ Node.jsベースのMCP（bravia_mcp）と、PythonベースのTVコントロー�
 
 ## ディレクトリ構成
 
-- `bravia_mcp/` : Node.jsによるMCP本体。DevContainer対応。
+- `bravia_mcp/` : Node.jsによるMCP本体。
 - `tv_control_agent/` : Python製のTVコントロールエージェント。
 
 ## セットアップ

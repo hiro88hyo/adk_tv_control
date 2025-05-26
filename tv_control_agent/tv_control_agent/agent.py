@@ -1,16 +1,19 @@
-import json, os, pprint, time, uuid
-import asyncio
-from google import genai
+import os
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.tools.mcp_tool.mcp_toolset import (
     MCPToolset, 
     SseServerParams
 )
-from google.adk.runners import Runner
 from dotenv import load_dotenv
 load_dotenv()
 
-MCP_SERVER_URL = os.environ.get("MCP_SERVER_URL", "http://192.168.2.250:3000/sse")
+MCP_SERVER_URL = os.environ.get("MCP_SERVER_URL")
+if not MCP_SERVER_URL:
+    raise ValueError("環境変数 MCP_SERVER_URL が設定されていません。.envファイルまたは環境変数で設定してください。")
+
+LLM_MODEL = os.environ.get("LLM_MODEL")
+if not LLM_MODEL:
+    raise ValueError("環境変数 LLM_MODEL が設定されていません。.envファイルまたは環境変数で設定してください。")
 
 system_instruction = '''
   あなたは、ユーザーの指示に基づいてテレビを操作する高度なAIアシスタントです。あなたの主な役割は、ユーザーからの自然言語によるリクエストを解釈し、以下のMCP (Media Control Protocol) サーバー機能を呼び出すことで、テレビを制御することです。
@@ -64,7 +67,7 @@ system_instruction = '''
 '''
 
 root_agent = LlmAgent(
-  model="gemini-2.5-flash-preview-05-20",
+  model=LLM_MODEL,
   name="bravia_control_agent",
   instruction=system_instruction,
   tools=[
